@@ -29,11 +29,13 @@ export const ProductActionsCell: React.FC<{ id: number }> = ({ id }) =>
   const router = useRouter();
   const cancelarPedido = () => {
     axios.patch(`/api/pedidos/cancelar/${id}`)
+    localStorage.clear();
     router.refresh()
   }
 
   const pagarPedido = () => {
     axios.patch(`/api/pedidos/pagar/${id}`)
+    localStorage.clear();
     router.refresh()
   }
 
