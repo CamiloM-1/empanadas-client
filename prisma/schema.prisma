@@ -1,0 +1,48 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Cliente {
+  id       Int      @id @default(autoincrement())
+  nombre   String
+  cedula   String
+  direccion String
+  telefono String
+
+  pedido Pedido[]
+}
+
+model Producto {
+  id          Int      @id @default(autoincrement())
+  nombre      String
+  precio      Decimal
+  pedidos     Pedido[]  @relation("productos_en_pedido")
+}
+
+model Pedido {
+  id          Int      @id @default(autoincrement())
+  id_cliente  Int
+  valor_total Decimal
+  estado      OrderStatus
+  creacion    DateTime  @default(now())
+  cliente     Cliente   @relation(fields: [id_cliente], references: [id])
+  productos   Producto[] @relation("productos_en_pedido")
+
+  @@index([id_cliente])
+}
+
+enum OrderStatus {
+  PENDIENTE
+  CANCELADO
+  ACEPTADO
+  PAGADO
+}
